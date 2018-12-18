@@ -6,10 +6,10 @@ class Vector {
       this.y = y;
    }
    plus(vector) {
-      if (vector instanceof Vector) {
-         return new Vector(this.x + vector.x, this.y + vector.y);
+      if (!(vector instanceof Vector)) {
+         throw new Error(`${vector} не является объектом класса Vector`);
       } else {
-         throw new SyntaxError(`${vector} не является объектом класса Vector`);
+         return new Vector(this.x + vector.x, this.y + vector.y);
       }
    }
    times(factor = 1) {
@@ -18,16 +18,16 @@ class Vector {
 }
 class Actor {
    constructor(pos = new Vector(0, 0), size = new Vector(1, 1), speed = new Vector(0, 0)) {
-      if (pos instanceof Vector && size instanceof Vector && speed instanceof Vector) {
+      if (!(pos instanceof Vector)) {
+         throw new Error(`${pos} не является объектом класса Vector`);
+      } else if (!(size instanceof Vector)) {
+         throw new Error(`${size} не является объектом класса Vector`);
+      } else if (!(speed instanceof Vector)) {
+         throw new Error(`${speed} не является объектом класса Vector`);
+      } else {
          this.pos = pos;
          this.size = size;
          this.speed = speed;
-      } else if (!(pos instanceof Vector)) {
-         throw new SyntaxError(`${pos} не является объектом класса Vector`);
-      } else if (!(size instanceof Vector)) {
-         throw new SyntaxError(`${size} не является объектом класса Vector`);
-      } else if (!(speed instanceof Vector)) {
-         throw new SyntaxError(`${speed} не является объектом класса Vector`);
       }
    }
    get type() {
@@ -49,7 +49,7 @@ class Actor {
    act() {}
    isIntersect(actor) {
       if (!(actor instanceof Actor)) {
-         throw new SyntaxError(`${actor} не является объектом класса Actor`);
+         throw new Error(`${actor} не является объектом класса Actor`);
       } else if (actor === this) {
          return false;
       } else {
@@ -64,7 +64,7 @@ class Level {
       this.actors = actors;
       this.player = actors.find(elem => elem.type === 'player');
       this.height = grid.length;
-      this.width = this.height === 0 ? 0 : Math.max(...grid.map(elem => elem.length));
+      this.width = Math.max(...grid.map(elem => elem.length));
       this.status = null;
       this.finishDelay = 1;
    }
@@ -76,16 +76,16 @@ class Level {
    }
    actorAt(actor) {
       if (!(actor instanceof Actor)) {
-         throw new SyntaxError(`${actor} не является объектом класса Actor`);
+         throw new Error(`${actor} не является объектом класса Actor`);
       } else {
          return this.actors.find(elem => elem.isIntersect(actor));
       }
    }
    obstacleAt(target, size) {
       if (!(target instanceof Vector)) {
-         throw new SyntaxError(`${target} не является объектом класса Vector`);
+         throw new Error(`${target} не является объектом класса Vector`);
       } else if (!(size instanceof Vector)) {
-         throw new SyntaxError(`${size} не является объектом класса Vector`);
+         throw new Error(`${size} не является объектом класса Vector`);
       } else {
          const movingActor = new Actor(target, size);
          if (movingActor.top < 0 || movingActor.left < 0 || movingActor.right > this.width) {
@@ -101,7 +101,6 @@ class Level {
                }
             }
          }
-         return undefined;
       }
    }
    removeActor(actor) {
