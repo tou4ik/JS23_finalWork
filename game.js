@@ -64,7 +64,7 @@ class Level {
       this.actors = actors;
       this.player = actors.find(elem => elem.type === 'player');
       this.height = grid.length;
-      this.width = Math.max(...grid.map(elem => elem.length));
+      this.width = Math.max(0, ...this.grid.map(x => x.length));
       this.status = null;
       this.finishDelay = 1;
    }
